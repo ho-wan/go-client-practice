@@ -11,7 +11,6 @@ func main() {
 	gc := github.NewClient()
 
 	ctx := context.Background()
-
 	err := gc.GetList(ctx)
 	if err != nil {
 		log.Fatalln("failed to get list", err)
