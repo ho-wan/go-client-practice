@@ -1,3 +1,5 @@
+//go:generate mockgen -destination=./mocks/mockhttp.go -package=mockhttp net/http RoundTripper
+
 package github
 
 import (
