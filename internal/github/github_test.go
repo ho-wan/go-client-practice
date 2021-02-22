@@ -11,6 +11,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/ho-wan/go-client-practice/internal/github"
 	mockhttp "github.com/ho-wan/go-client-practice/internal/github/mocks"
+	"github.com/ho-wan/go-client-practice/internal/middleware"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -58,7 +59,8 @@ func TestClient_GetRepos_Success(t *testing.T) {
 				Transport: mockRoundTripper,
 			}
 
-			gc := github.NewClient(mockClient).WithLogging()
+			lc := middleware.WithLogging(mockClient)
+			gc := github.NewClient(lc)
 			require.NotNil(t, gc)
 
 			got, err := gc.GetRepos(ctx)

@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/golang/mock v1.4.4
+	github.com/hashicorp/go-retryablehttp v0.6.8
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.4.0
 	golang.org/x/oauth2 v0.0.0-20210220000619-9bb904979d93
