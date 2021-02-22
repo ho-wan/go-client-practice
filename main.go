@@ -37,6 +37,6 @@ func getAuthenticatedGithubClient(ctx context.Context) *github.Client {
 
 	tc := oauth2.NewClient(ctx, ts)
 
-	gc := github.NewClient(tc)
+	gc := github.NewClient(tc).WithLogging()
 	return gc
 }

@@ -31,7 +31,7 @@ func TestClient_GetRepos_Success(t *testing.T) {
 				{
 					ID:        Int64(1),
 					Name:      String("some-repo-name"),
-					CreatedAt: Time("2021-01-02T15:04:05Z"),
+					CreatedAt: Time(t, "2021-01-02T15:04:05Z"),
 				},
 			},
 		},
@@ -58,7 +58,7 @@ func TestClient_GetRepos_Success(t *testing.T) {
 				Transport: mockRoundTripper,
 			}
 
-			gc := github.NewClient(mockClient)
+			gc := github.NewClient(mockClient).WithLogging()
 			require.NotNil(t, gc)
 
 			got, err := gc.GetRepos(ctx)

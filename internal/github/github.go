@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"path"
 	"time"
 
 	"github.com/pkg/errors"
@@ -19,7 +20,7 @@ const (
 	defaultTimeout = 10 * time.Second
 )
 
-// Client ...
+// Client holds the github client
 type Client struct {
 	client  *http.Client
 	baseURL *url.URL
@@ -56,8 +57,17 @@ type Repository struct {
 
 // GetRepos gets repos for user
 func (c *Client) GetRepos(ctx context.Context) ([]Repository, error) {
-	// TODO update to form req and use Do()
-	resp, err := c.client.Get("https://api.github.com/user/repos")
+	route := "user/repos"
+
+	u := c.baseURL
+	u.Path = path.Join(u.Path, route)
+
+	req, err := http.NewRequest(http.MethodGet, u.String(), nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create new request")
+	}
+
+	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to fetch repos")
 	}
@@ -74,4 +84,20 @@ func (c *Client) GetRepos(ctx context.Context) ([]Repository, error) {
 	}
 
 	return repos, nil
+}
+
+// WithLogging wraps the client with a logging RoundTripper
+func (c *Client) WithLogging() *Client {
+	c.client.Transport = &loggingRoundTripper{c.client.Transport}
+	return c
+}
+
+type loggingRoundTripper struct {
+	transport http.RoundTripper
+}
+
+// RoundTrip wraps the client transport and logs the time, request method and url
+func (l loggingRoundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
+	log.Printf("%s %s", r.Method, r.URL)
+	return l.transport.RoundTrip(r)
 }
